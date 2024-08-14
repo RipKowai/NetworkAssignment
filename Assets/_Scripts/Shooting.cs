@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Shooting : PlayerController
+public class Shooting : NetworkBehaviour
 {
     public Transform _firePoint;
+    public GameObject _arrowPrefab;
     public float _arrowSpeed = 10f;
 
     [ServerRpc]

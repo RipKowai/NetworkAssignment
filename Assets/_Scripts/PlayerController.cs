@@ -9,9 +9,11 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private float speed = 3f;
     private Camera m_Camera;
     private Vector3 _mouseInput = Vector3.zero;
-    public GameObject _arrowPrefab;
-
     private Shooting shooting;
+
+    public Transform spawn_point;
+    public GameObject _arrowPrefab;
+    public GameObject a_SpawnPrefab;
     
     private void Initialize ()
     {
@@ -20,10 +22,12 @@ public class PlayerController : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        base.OnNetworkSpawn();
+       // base.OnNetworkSpawn();
         shooting = GetComponent<Shooting>();
-     
+
         Initialize();
+        if (!IsOwner) return;
+        CreateAsteroidSpawnerServerRpc();
     }
     private void Update()
     {
@@ -54,5 +58,15 @@ public class PlayerController : NetworkBehaviour
         {
             shooting.ShootServerRpc();
         }
+    }
+
+    [ServerRpc]
+    private void CreateAsteroidSpawnerServerRpc()
+    {
+        if (!IsOwner) return;
+        GameObject spawn = Instantiate(a_SpawnPrefab, Vector3.zero, Quaternion.identity);
+
+        spawn.GetComponent<NetworkObject>().Spawn();
+        Debug.Log("Spawned Asteroid");
     }
 }

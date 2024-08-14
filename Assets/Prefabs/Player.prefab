@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6089864335211358120}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -126,7 +126,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 3
+  spawn_point: {fileID: 196049510042640118, guid: 93f853578b94ff649a41a5b969767b20, type: 3}
   _arrowPrefab: {fileID: 8907571007685815914, guid: a046e9d309ac1794eb32977fa91f4da5, type: 3}
+  a_SpawnPrefab: {fileID: 281378772565295765, guid: ce22ce9a04d76404fb070fd446530044, type: 3}
 --- !u!114 &-297751118880105800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,9 +171,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7315911f1c6b00948b7ee2afb608379e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
-  _arrowPrefab: {fileID: 8907571007685815914, guid: a046e9d309ac1794eb32977fa91f4da5, type: 3}
   _firePoint: {fileID: 3208788139915336139}
+  _arrowPrefab: {fileID: 8907571007685815914, guid: a046e9d309ac1794eb32977fa91f4da5, type: 3}
   _arrowSpeed: 10
 --- !u!1 &2817513016942827821
 GameObject:
