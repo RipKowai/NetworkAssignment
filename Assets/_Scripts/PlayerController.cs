@@ -137,7 +137,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Arrow" || collision.gameObject.tag == "Asteroids")
+        if (collision.gameObject.tag == "Asteroids")
         {
             Debug.Log("Ouch I got Hit");
         }
