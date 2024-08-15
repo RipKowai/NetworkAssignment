@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class DestroyAsteroid : MonoBehaviour
+public class DestroyAsteroid : NetworkBehaviour
 {
     public float _maxDistance = 10f;
     private Vector3 _startPosition;
@@ -26,8 +27,9 @@ public class DestroyAsteroid : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Player" || collision.gameObject.tag == "Arrow" || collision.gameObject.tag == "Asteroids")
+        if (collision.gameObject.tag == "Player" || collision.gameObject.tag == "Arrow")
         {
+            if (!IsOwner) return;
             Destroy(gameObject);
         }
     }

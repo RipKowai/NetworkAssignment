@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class DestroyArrow : MonoBehaviour
+public class DestroyArrow : NetworkBehaviour
 {
     public float _maxDistance = 10f;
     private Vector3 _startPosition;
@@ -21,6 +22,16 @@ public class DestroyArrow : MonoBehaviour
         if(distanceTraveled >= _maxDistance )
         {
             Destroy(gameObject);
+        }
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(!IsOwner)
+        {
+            if (collision.gameObject.tag == "Asteroids")
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }

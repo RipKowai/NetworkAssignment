@@ -2,19 +2,23 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class PlayerController : NetworkBehaviour
-
 {
     [SerializeField] private float speed = 3f;
     private Camera m_Camera;
     private Vector3 _mouseInput = Vector3.zero;
     private Shooting shooting;
+    private int Heart = 4;
+    private int Laugh = 5;
+    private int MiddleFinger = 6;
 
-    public Transform spawn_point;
+    //public Transform spawn_point;
+    public float deSpawnTime = 3;
     public GameObject _arrowPrefab;
     public GameObject a_SpawnPrefab;
-    
+    private bool emoji_spawned = false;
     private void Initialize ()
     {
         m_Camera = Camera.main;
@@ -58,6 +62,67 @@ public class PlayerController : NetworkBehaviour
         {
             shooting.ShootServerRpc();
         }
+
+        if (IsOwner && Input.GetKey(KeyCode.E))
+        {
+            UseEmoji();
+            InvokeRepeating("DeSpawnEmoji", 0f, deSpawnTime);
+        }
+    }
+    public void UseEmoji()
+    {
+        // Call the ServerRpc to activate the emoji
+        EmojiServerRpc();
+
+    }
+
+    [ServerRpc]
+    private void EmojiServerRpc()
+    {
+        //if (!IsOwner)
+        //{
+        //    Debug.LogWarning("Attempted to activate emoji but this client is not the owner!");
+        //    return;
+        //}
+        
+        if (!emoji_spawned)
+        {
+            GameObject emoji = gameObject.transform.GetChild(Laugh).gameObject;
+            emoji.SetActive(true);
+            emoji_spawned = true;
+
+            // Inform all clients to activate the emoji
+            EmojiClientRpc(Laugh); // Pass the index of the emoji for clarity
+
+            // Start the deactivation process
+            Invoke(nameof(DeactivateEmoji), deSpawnTime);
+        }
+    }
+
+    [ClientRpc]  
+    private void EmojiClientRpc(int emojiIndex)
+    {
+        // This will be called on all clients
+        GameObject emoji = transform.GetChild(emojiIndex).gameObject;
+        emoji.SetActive(true);
+
+    }
+    private void DeactivateEmoji()
+    {
+        // Deactivate the emoji on the server
+        GameObject emoji = gameObject.transform.GetChild(Laugh).gameObject;
+        emoji.SetActive(false);
+        emoji_spawned = false;
+
+        EmojiDeactivationClientRpc(Laugh);
+    }
+
+    [ClientRpc]
+    private void EmojiDeactivationClientRpc(int emojiIndex)
+    {
+        // This will be called on all clients
+        GameObject emoji = transform.GetChild(emojiIndex).gameObject;
+        emoji.SetActive(false);
     }
 
     [ServerRpc]
@@ -68,5 +133,13 @@ public class PlayerController : NetworkBehaviour
 
         spawn.GetComponent<NetworkObject>().Spawn();
         Debug.Log("Spawned Asteroid");
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Arrow" || collision.gameObject.tag == "Asteroids")
+        {
+            Debug.Log("Ouch I got Hit");
+        }
     }
 }
